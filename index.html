@@ -384,7 +384,7 @@
 
 <script>
   // Falling particles
-  const symbols = ['🌸','🌸','🌸','💗','💗','🍃','🌺','💮','🌷'];
+  const symbols = ['🌸','🌸','🌸','💗','💖','🍁','🌺','💮','🌷'];
   for (let i = 0; i < 30; i++) {
     const el = document.createElement('div');
     el.className = 'particle';
@@ -399,46 +399,84 @@
     document.body.appendChild(el);
   }
 
-  // Open letter
-  let opened = false;
-  function openLetter() {
-    if (opened) return;
-    opened = true;
+    // Toggle letter (open / close)
+let opened = false;
 
-    document.getElementById('envelope').classList.add('open');
-    document.getElementById('hint').classList.add('hidden');
+function openLetter() {
 
-    // Burst confetti
-    const rect = document.querySelector('.env-seal').getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const burstSymbols = ['💗','✨','🌸','💖','⭐','🌷'];
-    for (let i = 0; i < 16; i++) {
-      const b = document.createElement('div');
-      b.className = 'burst';
-      b.textContent = burstSymbols[Math.floor(Math.random() * burstSymbols.length)];
-      const angle = (Math.PI * 2 * i) / 16;
-      const dist = 60 + Math.random() * 90;
-      b.style.cssText = `
-        left:${cx}px; top:${cy}px;
-        --dx:${Math.cos(angle)*dist}px;
-        --dy:${Math.sin(angle)*dist}px;
-        animation-delay:${Math.random()*0.2}s;
-      `;
-      document.body.appendChild(b);
-      setTimeout(() => b.remove(), 1300);
-    }
+  const envelope = document.getElementById('envelope');
+  const hint = document.getElementById('hint');
 
-    // Intensify rain momentarily
-    document.querySelectorAll('.particle').forEach(p => {
-      p.style.animationDuration = `${2.5 + Math.random() * 2.5}s`;
-    });
-    setTimeout(() => {
-      document.querySelectorAll('.particle').forEach(p => {
-        p.style.animationDuration = `${6 + Math.random() * 8}s`;
-      });
-    }, 4000);
+  // cambiar estado
+  opened = !opened;
+
+  envelope.classList.toggle('open');
+
+  if (opened) {
+    hint.classList.add('hidden');
+    burstEffect();
+    intensifyParticles();
+  } else {
+    hint.classList.remove('hidden');
   }
+}
+
+/* ---------- Burst effect ---------- */
+function burstEffect() {
+
+  const seal = document.querySelector('.env-seal');
+  if (!seal) return;
+
+  const rect = seal.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+
+  const burstSymbols = ['💗','✨','🌸','💖','⭐','🌷'];
+
+  for (let i = 0; i < 16; i++) {
+    const b = document.createElement('div');
+    b.className = 'burst';
+    b.textContent =
+      burstSymbols[Math.floor(Math.random() * burstSymbols.length)];
+
+    const angle = (Math.PI * 2 * i) / 16;
+    const dist = 60 + Math.random() * 90;
+
+    b.style.cssText = `
+      left:${cx}px;
+      top:${cy}px;
+      --dx:${Math.cos(angle)*dist}px;
+      --dy:${Math.sin(angle)*dist}px;
+    `;
+
+    document.body.appendChild(b);
+    setTimeout(() => b.remove(), 1300);
+  }
+}
+
+/* ---------- Particle boost ---------- */
+function intensifyParticles() {
+  document.querySelectorAll('.particle').forEach(p => {
+    p.style.animationDuration = `${2.5 + Math.random() * 2.5}s`;
+  });
+
+  setTimeout(() => {
+    document.querySelectorAll('.particle').forEach(p => {
+      p.style.animationDuration = `${6 + Math.random() * 8}s`;
+    });
+  }, 4000);
+}
+
+/* ---------- Close when clicking outside ---------- */
+document.addEventListener("click", (e) => {
+
+  const envelope = document.getElementById("envelope");
+
+  if (!envelope.contains(e.target) && opened) {
+    openLetter();
+  }
+});
+
 </script>
 </body>
 </html>
