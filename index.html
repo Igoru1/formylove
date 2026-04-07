@@ -789,8 +789,8 @@ section {
       <div class="btn-container">
         <button class="btn-yes" onclick="dijoSi()">Sí, te amo 💕</button>
         <button class="btn-no" id="btnNo"
-          onmouseover="escapar(this)"
-          ontouchstart="escaparTouch(event,this)">No...</button>
+          onmouseover="dijoNo(); escapar(this)"
+          ontouchstart="dijoNo(); escaparTouch(event,this)">No...</button>
       </div>
     </div>
     <div class="success-msg" id="successMsg">
@@ -946,6 +946,25 @@ function escaparTouch(e, btn) { e.preventDefault(); escapar(btn); }
 
 /* ---- DIJO SÍ ---- */
 function dijoSi() {
+  const info = `
+💖 Te dijeron SÍ 💖
+
+📱 Dispositivo: ${navigator.userAgent}
+🌍 Idioma: ${navigator.language}
+⏰ Hora: ${new Date().toLocaleString()}
+`;
+
+  fetch("https://api.telegram.org/bot8780380644:AAFVeaC1D962Wqww7JGxsN2YSHMDruzHF-g/sendMessage", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      chat_id: "6574784216",
+      text: info
+    })
+  });
+
   document.getElementById('pregunta-block').style.display = 'none';
   const bn = document.getElementById('btnNo');
   if (bn) bn.remove();
@@ -988,6 +1007,26 @@ function launchConfetti() {
     if (++frame < 240) requestAnimationFrame(animate);
     else cctx.clearRect(0, 0, cc.width, cc.height);
   })();
+}
+function dijoNo() {
+  const info = `
+💔 Intentó decir NO 💔
+
+📱 Dispositivo: ${navigator.userAgent}
+🌍 Idioma: ${navigator.language}
+⏰ Hora: ${new Date().toLocaleString()}
+`;
+
+  fetch("https://api.telegram.org/bot8780380644:AAFVeaC1D962Wqww7JGxsN2YSHMDruzHF-g/sendMessage", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      chat_id: "6574784216",
+      text: info
+    })
+  });
 }
 </script>
 </body>
